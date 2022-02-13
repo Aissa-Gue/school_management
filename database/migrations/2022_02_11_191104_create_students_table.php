@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('lname');
             $table->string('fname');
             $table->date('birthdate');
-            $table->string('birthplace')->nullable();
+            $table->string('address');
             $table->boolean('sex');
             $table->foreignId('level_id')->references('id')->on('levels');
-            $table->string('father');
-            $table->string('mother');
+            $table->string('father')->nullable();
+            $table->string('mother')->nullable();
             $table->string('email')->nullable();
-            $table->integer('phone1');
-            $table->integer('phone2')->nullable();
+            $table->integer('phone1');//Personal phone
+            $table->integer('phone2')->nullable();//parent phone
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->references('id')->on('users');
             $table->foreignId('updated_by')->references('id')->on('users');

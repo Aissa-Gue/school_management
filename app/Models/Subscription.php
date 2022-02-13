@@ -13,7 +13,6 @@ class Subscription extends Model
     protected $fillable = [
         'enrolment_id',
         'paid_amount',
-        'notes',
         'created_by',
         'updated_by',
         'deleted_by',

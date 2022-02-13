@@ -14,6 +14,7 @@ class Teacher extends Model
         'lname',
         'fname',
         'sex',
+        'Salary',
         'email',
         'phone',
         'notes',

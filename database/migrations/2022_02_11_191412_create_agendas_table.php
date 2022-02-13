@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('class_id')->references('id')->on('classes');
             $table->foreignId('course_id')->references('id')->on('courses');
             $table->integer('day');//From 01 to 07
-            $table->time('time');
+            $table->time('from');
+            $table->time('to');
             $table->string('color');
             $table->timestamps();
         });

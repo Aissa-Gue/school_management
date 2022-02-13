@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('enrolment_id')->references('id')->on('enrolments');
             $table->float('paid_amount');
-            $table->text('notes')->nullable();
             $table->foreignId('created_by')->references('id')->on('users');
             $table->foreignId('updated_by')->references('id')->on('users');
             $table->foreignId('deleted_by')->references('id')->on('users');
