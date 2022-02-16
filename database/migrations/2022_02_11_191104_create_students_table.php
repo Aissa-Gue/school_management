@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('lname');
             $table->string('fname');
             $table->date('birthdate');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->boolean('sex');
             $table->foreignId('level_id')->references('id')->on('levels');
             $table->string('father')->nullable();

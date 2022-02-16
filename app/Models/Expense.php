@@ -12,11 +12,31 @@ class Expense extends Model
 
     protected $fillable = [
         'name',
-        'category',
+        'teacher_id',
         'amount',
         'notes',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id')->withTrashed();
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
+    }
 }

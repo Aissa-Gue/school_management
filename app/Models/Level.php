@@ -12,4 +12,14 @@ class Level extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function courses()
+    {
+        return $this->hasMany(CourseLevel::class, 'level_id', 'id');
+    }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class, 'level_id', 'id');
+    }
 }

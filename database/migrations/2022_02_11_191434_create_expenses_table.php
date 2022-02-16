@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('category');//teacher|Other
+            $table->string('name')->nullable();//nullable only if teacher_id != null
+            $table->foreignId('teacher_id')->nullable()->references('id')->on('teachers');//nullable only if name != null
             $table->float('amount');
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->references('id')->on('users');

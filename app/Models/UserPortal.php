@@ -13,4 +13,14 @@ class UserPortal extends Model
         'user_id',
         'portal_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function portal()
+    {
+        return $this->belongsTo(Portal::class, 'portal_id', 'id');
+    }
 }

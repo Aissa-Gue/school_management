@@ -17,4 +17,24 @@ class Subscription extends Model
         'updated_by',
         'deleted_by',
     ];
+
+    public function enrolment()
+    {
+        return $this->belongsTo(Enrolment::class, 'enrolment_id', 'id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id')->withTrashed();
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
+    }
 }

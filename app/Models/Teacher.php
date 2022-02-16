@@ -22,4 +22,24 @@ class Teacher extends Model
         'updated_by',
         'deleted_by',
     ];
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id')->withTrashed();
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
+    }
+
+    public function course()
+    {
+        return $this->hasOne(Course::class, 'teacher_id', 'id');
+    }
 }

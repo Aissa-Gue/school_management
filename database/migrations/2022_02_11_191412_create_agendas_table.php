@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('agendas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_id')->references('id')->on('classes');
+            $table->foreignId('classroom_id')->references('id')->on('classrooms');
             $table->foreignId('course_id')->references('id')->on('courses');
             $table->integer('day');//From 01 to 07
             $table->time('from');

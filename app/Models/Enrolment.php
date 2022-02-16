@@ -13,8 +13,7 @@ class Enrolment extends Model
     protected $fillable = [
         'student_id',
         'course_id',
-        'class_id',
-        'teacher_id',
+        'classroom_id',
         'plan_id',
         'required_amount',
         'total_paid_amount',
@@ -22,4 +21,44 @@ class Enrolment extends Model
         'updated_by',
         'deleted_by',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id');
+    }
+
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class, 'classroom_id', 'id');
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'plan_id', 'id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id')->withTrashed();
+    }
+
+    public function deletedBy()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id')->withTrashed();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class, 'enrolment_id', 'id');
+    }
 }

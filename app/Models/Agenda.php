@@ -10,14 +10,22 @@ class Agenda extends Model
     use HasFactory;
 
     protected $fillable = [
-        'class_id',
+        'classroom_id',
         'course_id',
         'day',
         'from',
         'to',
-        'color',
-        'created_by',
-        'updated_by',
-        'deleted_by',
+        'color'
     ];
+
+    // belongsTo => foreign key here
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class, 'classroom_id', 'id');
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id');
+    }
 }
