@@ -55,6 +55,6 @@ class Student extends Model
 
     public function courses()
     {
-        return $this->hasManyThrough(Course::class, Enrolment::class,'student_id', 'enrolment_id');
+        return $this->belongsToMany(Course::class,Enrolment::class);//class association- student_id/course_id
     }
 }

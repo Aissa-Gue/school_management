@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('plan_id')->references('id')->on('plans');
             $table->float('price');
             $table->foreignId('created_by')->references('id')->on('users');
-            $table->foreignId('updated_by')->references('id')->on('users');
-            $table->foreignId('deleted_by')->references('id')->on('users');
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users');
+            $table->foreignId('deleted_by')->nullable()->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
             $table->primary(array('course_id','plan_id'));

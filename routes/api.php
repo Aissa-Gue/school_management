@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,8 +33,11 @@ Route::post('/login', [UserController::class, 'login']);
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('levels', LevelController::class);
-    Route::apiResource('classrooms', LevelController::class);
+    Route::apiResource('classrooms', ClassroomController::class);
     Route::apiResource('agendas', AgendaController::class);
+    Route::apiResource('students', StudentController::class);
+    Route::apiResource('teachers', TeacherController::class);
+    Route::apiResource('courses', CourseController::class);
 
     Route::post('/logout', [UserController::class, 'logout']);
 });

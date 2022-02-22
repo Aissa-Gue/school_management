@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('course_id')->references('id')->on('courses');
             $table->foreignId('level_id')->references('id')->on('levels');
             $table->foreignId('created_by')->references('id')->on('users');
-            $table->foreignId('updated_by')->references('id')->on('users');
-            $table->foreignId('deleted_by')->references('id')->on('users');
+            $table->foreignId('updated_by')->nullable()->references('id')->on('users');
+            $table->foreignId('deleted_by')->nullable()->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
             $table->primary(array('course_id','level_id'));

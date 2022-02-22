@@ -34,14 +34,6 @@ class AgendaController extends Controller
             'color' => 'required',
         ]);
         return Agenda::create($validated);
-        /**Agenda::create([
-            'classroom_id' => $request->class_id,
-            'course_id' => $request->course_id,
-            'day' => $request->day,
-            'from' => $request->from,
-            'to' => $request->to,
-            'color' => $request->color,
-        ]);**/
     }
 
     /**

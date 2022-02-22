@@ -68,8 +68,8 @@ class ClassroomController extends Controller
     public function destroy($id)
     {
         if(Classroom::destroy($id))
-            return response(['result' => 'record has been deleted']);
+            return response(['message' => 'record has been deleted']);
         else
-            return response(['result' => 'Error: delete operation is failed']);
+            return response(['message' => 'Error: delete operation is failed']);
     }
 }
