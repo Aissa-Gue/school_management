@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('hasPortal:settings');
+    }
+
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -30,6 +35,7 @@ class UserController extends Controller
 
         $token = $user->createToken('myapptoken')->plainTextToken;
         $response = [
+            'hasPortal' => true,
             'user' => $user,
             'token' => $token
         ];
@@ -56,6 +62,7 @@ class UserController extends Controller
 
         $token = $user->createToken('myapptoken')->plainTextToken;
         $response = [
+            'hasPortal' => true,
             'user' => $user,
             'token' => $token
         ];
@@ -66,6 +73,22 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
-        return ['message' => 'Logged out'];
+        return response([
+            'hasPortal' => true,
+            'message' => 'Logged out'
+        ]);
+    }
+
+    public function addPortal(Request $request){
+
+    }
+
+    public function deletePortal(Request $request){
+
+    }
+
+    public function destroy($id){
+        //delete user
+        //created_by/updated_by/deleted_by -> null
     }
 }

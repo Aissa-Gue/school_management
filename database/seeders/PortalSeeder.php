@@ -38,7 +38,7 @@ class PortalSeeder extends Seeder
             ],
             [
                 'id' => 6,
-                'name' => 'classes',
+                'name' => 'classrooms',
             ],
             [
                 'id' => 7,
@@ -55,6 +55,10 @@ class PortalSeeder extends Seeder
             [
                 'id' => 10,
                 'name' => 'settings',
+            ],
+            [
+                'id' => 11,
+                'name' => 'enrolments',
             ],
         ]);
     }

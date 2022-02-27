@@ -7,14 +7,25 @@ use Illuminate\Http\Request;
 
 class AgendaController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('hasPortal:agenda');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public
+    function index()
     {
-        return Agenda::all();
+        $agenda = Agenda::with(['classroom', 'course'])->get();
+        return response([
+            'hasPortal' => true,
+            'agenda' => $agenda
+        ]);
     }
 
     /**
@@ -23,17 +34,22 @@ class AgendaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public
+    function store(Request $request)
     {
         $validated = $request->validate([
-            'class_id' => 'required',
-            'course_id' => 'required',
-            'day' => 'required',
-            'from' => 'required',
-            'to' => 'required',
+            'class_id' => 'required|numeric|exists:classrooms,id',
+            'course_id' => 'required|numeric|exists:courses,id',
+            'day' => 'required|integer|between:1,7',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i',
             'color' => 'required',
         ]);
-        return Agenda::create($validated);
+
+        return response([
+            'hasPortal' => true,
+            'agenda' => Agenda::create($validated),
+        ]);
     }
 
     /**
@@ -42,9 +58,14 @@ class AgendaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
-       return Agenda::find($id);
+        $agenda = Agenda::with(['classroom', 'course'])->find($id);
+        return response([
+            'hasPortal' => true,
+            'agenda' => $agenda,
+        ]);
     }
 
     /**
@@ -54,19 +75,23 @@ class AgendaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public
+    function update(Request $request, $id)
     {
-        $agenda = Agenda::find($id);
         $validated = $request->validate([
-            'classroom_id' => 'required',
-            'course_id' => 'required',
-            'day' => 'required',
-            'from' => 'required',
-            'to' => 'required',
+            'classroom_id' => 'required|numeric|exists:classrooms,id',
+            'course_id' => 'required|numeric|exists:courses,id',
+            'day' => 'required|integer|between:1,7',
+            'from' => 'required|date_format:H:i',
+            'to' => 'required|date_format:H:i',
             'color' => 'required',
         ]);
+        $agenda = Agenda::find($id);
         $agenda->update($validated);
-        return $agenda;
+        return response([
+            'hasPortal' => true,
+            'agenda' => $agenda,
+        ]);
     }
 
     /**
@@ -75,11 +100,18 @@ class AgendaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public
+    function destroy($id)
     {
-        if(Agenda::destroy($id))
-            return response(['result' => 'record has been deleted']);
+        if (Agenda::destroy($id))
+            return response([
+                'hasPortal' => true,
+                'message' => 'record has been deleted'
+            ]);
         else
-            return response(['result' => 'Error: delete operation is failed']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'Error: delete operation is failed'
+            ]);
     }
 }

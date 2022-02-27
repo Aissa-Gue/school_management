@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('hasPortal:students');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +21,12 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return Student::with(['level','courses'])->get();
+        $students = Student::with(['level', 'courses'])->get();
+
+        return response([
+            'hasPortal' => true,
+            'students' => $students
+        ]);
     }
 
     /**
@@ -45,7 +55,12 @@ class StudentController extends Controller
             'notes' => 'nullable|size:255',
             'created_by' => 'required|numeric|exists:users,id',
         ]);
-        return Student::create($validated);
+        $student = Student::create($validated);
+
+        return response([
+            'hasPortal' => true,
+            'student' => $student
+        ]);
     }
 
     /**
@@ -56,7 +71,12 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        return Student::with(['level','courses','createdBy','updatedBy'])->find($id);
+        $student = Student::with(['level', 'courses', 'createdBy', 'updatedBy'])->find($id);
+
+        return response([
+            'hasPortal' => true,
+            'student' => $student
+        ]);
     }
 
     /**
@@ -88,7 +108,11 @@ class StudentController extends Controller
             'updated_by' => 'required|numeric|exists:users,id',
         ]);
         $student->update($validated);
-        return $student;
+
+        return response([
+            'hasPortal' => true,
+            'student' => $student
+        ]);
     }
 
     /**
@@ -99,9 +123,6 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        Student::where('id', $id)->update([
-            'deleted_by' => Auth::user()->id,
-        ]);
         DB::beginTransaction();
         try {
             Student::where('id', $id)->update([
@@ -109,11 +130,17 @@ class StudentController extends Controller
             ]);
             Student::destroy($id);
             DB::commit();
-            return response(['message' => 'record has been deleted']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'record has been deleted'
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response(['message' => 'Error: delete operation is failed']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'Error: delete operation is failed'
+            ]);
         }
     }
 }

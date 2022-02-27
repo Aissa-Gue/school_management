@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class ClassroomController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('hasPortal:classrooms');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,11 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        return Classroom::all();
+        $classrooms =  Classroom::all();
+        return response([
+            'hasPortal' => true,
+            'classrooms' => $classrooms
+        ]);
     }
 
     /**
@@ -28,7 +37,13 @@ class ClassroomController extends Controller
         $validated = $request->validate([
             'name' => 'required',
         ]);
-        return Classroom::create($validated);
+        $classroom =  Classroom::create($validated);
+
+        return response([
+            'hasPortal' => true,
+            'classroom' => $classroom
+        ]);
+
     }
 
     /**
@@ -39,7 +54,12 @@ class ClassroomController extends Controller
      */
     public function show($id)
     {
-        return Classroom::find($id);
+        $classroom = Classroom::find($id);
+
+        return response([
+            'hasPortal' => true,
+            'classroom' => $classroom
+        ]);
     }
 
     /**
@@ -51,12 +71,16 @@ class ClassroomController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $classroom = Classroom::find($id);
         $validated = $request->validate([
             'name' => 'required',
         ]);
+        $classroom = Classroom::find($id);
         $classroom->update($validated);
-        return $classroom;
+
+        return response([
+            'hasPortal' => true,
+            'classroom' => $classroom
+        ]);
     }
 
     /**
@@ -68,8 +92,14 @@ class ClassroomController extends Controller
     public function destroy($id)
     {
         if(Classroom::destroy($id))
-            return response(['message' => 'record has been deleted']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'record has been deleted'
+            ]);
         else
-            return response(['message' => 'Error: delete operation is failed']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'Error: delete operation is failed'
+            ]);
     }
 }

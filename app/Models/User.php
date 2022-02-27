@@ -48,6 +48,6 @@ class User extends Authenticatable
 
     public function portals()
     {
-        return $this->hasMany(UserPortal::class, 'user_id', 'id');
+        return $this->belongsToMany(Portal::class,UserPortal::class);//class association user_id/portal_id
     }
 }

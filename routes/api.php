@@ -3,8 +3,11 @@
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrolmentController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,20 +30,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 */
 
 //Public routes
-Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/logout', [UserController::class, 'logout']);
+
     Route::apiResource('levels', LevelController::class);
     Route::apiResource('classrooms', ClassroomController::class);
     Route::apiResource('agendas', AgendaController::class);
     Route::apiResource('students', StudentController::class);
     Route::apiResource('teachers', TeacherController::class);
     Route::apiResource('courses', CourseController::class);
+    Route::apiResource('enrolments', EnrolmentController::class);
+    Route::apiResource('subscriptions', SubscriptionController::class)->except(['index','show','update']);
+    Route::apiResource('agendas', AgendaController::class);
+    Route::apiResource('expenses', ExpenseController::class);
 
-    Route::post('/logout', [UserController::class, 'logout']);
 });
-
 
 

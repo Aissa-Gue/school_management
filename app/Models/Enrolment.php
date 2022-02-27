@@ -42,6 +42,11 @@ class Enrolment extends Model
         return $this->belongsTo(Plan::class, 'plan_id', 'id');
     }
 
+    public function teacher()
+    {
+        return $this->hasOneThrough(Teacher::class,Course::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by', 'id')->withTrashed();

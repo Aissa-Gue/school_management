@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('hasPortal:courses');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +23,12 @@ class CourseController extends Controller
      */
     public function index()
     {
-        return Course::with(['teacher', 'levels'])->get();
+        $courses = Course::with(['teacher', 'levels'])->get();
+
+        return response([
+            'hasPortal' => true,
+            'courses' => $courses
+        ]);
     }
 
     /**
@@ -29,10 +39,6 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $request->request->add([
-            'created_by' => Auth::user()->id,
-        ]);
-
         $request->validate([
             'name' => 'required|unique:courses,name',
             'teacher_id' => 'required|numeric|exists:teachers,id',
@@ -40,7 +46,6 @@ class CourseController extends Controller
             'level_id.*' => 'required|numeric|exists:levels,id',
             'plan_id' => 'required|array',
             'plan_id.*' => 'required|numeric|exists:plans,id',
-            'created_by' => 'required|numeric|exists:users,id',
         ]);
 
         DB::beginTransaction();
@@ -48,14 +53,14 @@ class CourseController extends Controller
             $course = Course::create([
                 'name' => $request->name,
                 'teacher_id' => $request->teacher_id,
-                'created_by' => $request->created_by,
+                'created_by' => Auth::user()->id,
             ]);
 
             foreach ($request->level_id as $level) {
                 CourseLevel::create([
                     'course_id' => $course->id,
                     'level_id' => $level,
-                    'created_by' => $request->created_by,
+                    'created_by' => Auth::user()->id,
                 ]);
             }
 
@@ -63,7 +68,7 @@ class CourseController extends Controller
                 CoursePlan::create([
                     'course_id' => $course->id,
                     'plan_id' => $plan,
-                    'created_by' => $request->created_by,
+                    'created_by' => Auth::user()->id,
                 ]);
             }
             DB::commit();
@@ -72,7 +77,10 @@ class CourseController extends Controller
             DB::rollBack();
         }
 
-        return $this->show($course->id);
+        return response([
+            'hasPortal' => true,
+            'course' => $this->show($course->id)
+        ]);
     }
 
     /**
@@ -83,7 +91,12 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        return Course::with(['teacher', 'levels', 'plans', 'createdBy', 'updatedBy'])->find($id);
+        $course = Course::with(['teacher', 'levels', 'plans', 'createdBy', 'updatedBy'])->find($id);
+
+        return response([
+            'hasPortal' => true,
+            'course' => $course
+        ]);
     }
 
     /**
@@ -95,11 +108,6 @@ class CourseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Course::find($id);
-        $request->request->add([
-            'updated_by' => Auth::user()->id,
-        ]);
-
         $request->validate([
             'name' => 'required|unique:courses,name,' . $id,
             'teacher_id' => 'required|numeric|exists:teachers,id',
@@ -107,7 +115,6 @@ class CourseController extends Controller
             'level_id.*' => 'required|numeric|exists:levels,id',
             'plan_id' => 'required|array',
             'plan_id.*' => 'required|numeric|exists:plans,id',
-            'updated_by' => 'required|numeric|exists:users,id',
         ]);
 
         DB::beginTransaction();
@@ -115,14 +122,14 @@ class CourseController extends Controller
             Course::where('id', $id)->update([
                 'name' => $request->name,
                 'teacher_id' => $request->teacher_id,
-                'updated_by' => $request->updated_by,
+                'updated_by' => Auth::user()->id,
             ]);
 
             foreach ($request->level_id as $level) {
                 CourseLevel::where('course_id', $id)->update([
                     'course_id' => $id,
                     'level_id' => $level,
-                    'updated_by' => $request->updated_by,
+                    'updated_by' => Auth::user()->id,
                 ]);
             }
 
@@ -130,7 +137,7 @@ class CourseController extends Controller
                 CoursePlan::where('course_id', $id)->update([
                     'course_id' => $id,
                     'plan_id' => $plan,
-                    'updated_by' => $request->updated_by,
+                    'updated_by' => Auth::user()->id,
                 ]);
             }
             DB::commit();
@@ -139,7 +146,10 @@ class CourseController extends Controller
             DB::rollBack();
         }
 
-        return $this->show($id);
+        return response([
+            'hasPortal' => true,
+            'course' => $this->show($id)
+        ]);
     }
 
     /**
@@ -165,11 +175,17 @@ class CourseController extends Controller
             CourseLevel::where('course_id', $id)->delete();
             CoursePlan::where('course_id', $id)->delete();
             DB::commit();
-            return response(['message' => 'record has been deleted']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'record has been deleted'
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response(['message' => 'Error: delete operation is failed']);
+            return response([
+                'hasPortal' => true,
+                'message' => 'Error: delete operation is failed'
+            ]);
         }
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class TeacherController extends Controller
+class ExpenseController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('hasPortal:teachers');
+        $this->middleware('hasPortal:expenses');
     }
 
     /**
@@ -21,11 +21,11 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teachers = Teacher::with(['course'])->get();
+        $expenses = Expense::with(['teacher'])->get();
 
         return response([
             'hasPortal' => true,
-            'teachers' => $teachers
+            'expenses' => $expenses
         ]);
     }
 
@@ -41,20 +41,17 @@ class TeacherController extends Controller
             'created_by' => Auth::user()->id,
         ]);
         $validated = $request->validate([
-            'lname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'fname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'sex' => 'required|boolean',
-            'salary' => 'required|numeric',
-            'email' => 'nullable|email|unique:teachers,email',
-            'phone' => 'required|numeric|unique:teachers,phone',
+            'name' => 'required_without:teacher_id|string',
+            'teacher_id' => 'required_without:name|numeric|exists:teachers,id',
+            'amount' => 'required|numeric',
             'notes' => 'nullable|size:255',
             'created_by' => 'required|numeric|exists:users,id',
         ]);
-        $teacher = Teacher::create($validated);
+        $expense = Expense::create($validated);
 
         return response([
             'hasPortal' => true,
-            'teacher' => $teacher
+            'expense' => $expense
         ]);
     }
 
@@ -66,11 +63,11 @@ class TeacherController extends Controller
      */
     public function show($id)
     {
-        $teacher = Teacher::with(['course', 'createdBy', 'updatedBy'])->find($id);
+        $expense = Expense::with(['teacher'])->find($id);
 
         return response([
             'hasPortal' => true,
-            'teacher' => $teacher
+            'expense' => $expense
         ]);
     }
 
@@ -83,25 +80,22 @@ class TeacherController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $teacher = Teacher::find($id);
+        $expense = Expense::find($id);
         $request->request->add([
             'updated_by' => Auth::user()->id,
         ]);
         $validated = $request->validate([
-            'lname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'fname' => 'required|regex:/^[\pL\s\-]+$/u',
-            'sex' => 'required|boolean',
-            'salary' => 'required|numeric',
-            'email' => 'nullable|email|unique:teachers,email,' . $id,
-            'phone' => 'required|numeric|unique:teachers,phone,' . $id,
+            'name' => 'required_without:teacher_id|string',
+            'teacher_id' => 'required_without:name|numeric|exists:teachers,id',
+            'amount' => 'required|numeric',
             'notes' => 'nullable|size:255',
             'updated_by' => 'required|numeric|exists:users,id',
         ]);
-        $teacher->update($validated);
+        $expense->update($validated);
 
         return response([
             'hasPortal' => true,
-            'teacher' => $teacher
+            'expense' => $expense
         ]);
     }
 
@@ -115,10 +109,11 @@ class TeacherController extends Controller
     {
         DB::beginTransaction();
         try {
-            Teacher::where('id', $id)->update([
+            Expense::where('id', $id)->update([
                 'deleted_by' => Auth::user()->id,
             ]);
-            Teacher::destroy($id);
+            Expense::destroy($id);
+
             DB::commit();
             return response([
                 'hasPortal' => true,
