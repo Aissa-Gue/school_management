@@ -49,5 +49,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('expenses', ExpenseController::class);
 
 });
+//cant write date manualy in create/edit student
+//go to prev page after deleting last row of current page
+//spatie laravel /multinancy
+//laravel jetstream
+
 
 

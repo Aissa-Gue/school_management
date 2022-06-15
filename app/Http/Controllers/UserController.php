@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('hasPortal:settings');
+        //$this->middleware('hasPortal:settings');
     }
 
     public function register(Request $request)

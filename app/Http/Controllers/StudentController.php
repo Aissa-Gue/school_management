@@ -21,7 +21,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::with(['level', 'courses'])->get();
+        $students = Student::with(['level', 'courses'])->paginate(7);
 
         return response([
             'hasPortal' => true,
@@ -52,12 +52,12 @@ class StudentController extends Controller
             'email' => 'nullable|email',
             'phone1' => 'required_without:phone2|numeric',
             'phone2' => 'required_without:phone1|numeric',
-            'notes' => 'nullable|size:255',
+            'notes' => 'nullable|max:255',
             'created_by' => 'required|numeric|exists:users,id',
         ]);
         $student = Student::create($validated);
 
-        return response([
+        return response()->json([
             'hasPortal' => true,
             'student' => $student
         ]);
@@ -104,7 +104,7 @@ class StudentController extends Controller
             'email' => 'nullable|email',
             'phone1' => 'required_without:phone2|numeric',
             'phone2' => 'required_without:phone1|numeric',
-            'notes' => 'nullable|size:255',
+            'notes' => 'nullable|max:255',
             'updated_by' => 'required|numeric|exists:users,id',
         ]);
         $student->update($validated);
